@@ -16,4 +16,4 @@ else:
 time.sleep( 3 )
 print ("Was a pleasure to hear about your day. Unfortunately, I'll be shutting down now so I'll be seeing you around!")
 time.sleep( 5 )
-exit()
+print("\"do stuff\"")
