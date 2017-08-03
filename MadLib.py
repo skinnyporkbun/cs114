@@ -1,0 +1,23 @@
+# print ("The NOUN jumped over the ADJ NOUN")
+# print ("Please fill in for the NOUN.")
+# noun = str(input())
+# adj = str(input("Please fill in for the ADJ: "))
+# noun2 = str(input("Please fill in for the second NOUN: "))
+#
+# print("The " + noun + " jumped over the " + adj + " " + noun2 + ".")
+
+# bike riding
+fill1 = str(input("Most doctors agree that bicycle                    (verb): "))
+fill2 = str(input(fill1 + " is a/an                                   (adjective): "))
+fill3 = str(input(fill2 + " form of exercise.                         (verb):"))
+fill4 = str(input(fill3 + " a bicycle enables you to develop your     (part of body): "))
+fill5 = str(input(fill4 + " muscles as well as                        (adverb): "))
+fill6 = str(input(fill5 + " increase the rate of your                 (part of body): "))
+fill7 = str(input(fill6 + " beat. More                                (nouns): "))
+fill8 = str(input(fill7 + " around the world                          (verb): "))
+fill9 = str(input(fill8 + " bicycles than drive                       (animals): "))
+fill10 = str(input(fill9 + ". No matter what kind of                  (noun): "))
+fill11 = str(input(fill10 + " you                                     (verb): "))
+fill12 = str(input(fill11 + ", always be sure to wear a/an            (adjective): "))
+fill13 = str(input(fill12 + " helmet. Make sure to have               (color): "))
+print(fill13 + " reflectors too!")
