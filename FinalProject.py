@@ -48,6 +48,8 @@ class Boss:
 class Environment:
     enviro = ""
 
+class Monster:
+    count = 0
 
 #---------------------Independent global variables--------------
 plate = 4
@@ -58,7 +60,7 @@ cloth = 1
 
 #------Function to set up random enviroment-----
 def RandEnv():
-    random = randint(1,4)
+    random = randint(1,1)
     if random == 1:
         enviro = "forest"
         return enviro
@@ -71,6 +73,26 @@ def RandEnv():
     elif random == 4:
         enviro = "savannah"
         return enviro
+
+
+#-----Function for to display different dialogue for each "movement" in terrain, or -------
+#reset for new terrain
+# def travel():
+#
+#     if enviro == "forest":
+#         forestcount += 1
+#         if forestcount == 1:
+#             print("You start to cautiously enter an ominous forest.")
+#         elif forestcount == 2:
+#             print("You continue your slow trek through the thick underbrush.")
+#         elif forestcount >= 3:
+#             print("The eerie silence of the forest causes you to ponder about life as you trudge on.")
+#     elif enviro == "desert":
+#         desertcount += 1
+#     elif enviro == "plain":
+#         plaincount += 1
+#     elif enviro == "savannah":
+#         savannahcount += 1
 
 
 # ---Function to allow player to heal using a potion---
@@ -148,7 +170,18 @@ def armorselect():
         print("Adventurers Guild Receptionist: Well, please let me know what it is you want now. Platemail, leather armor, or cloth armor?")
         armorselect()
 
-
+def encounter():
+    Monster.count += 1
+    mondice = randint(1,100)
+    if 1 <= mondice <= 40:
+        print("slime")
+    elif 41 <= mondice <= 70:
+        print("wolf")
+    elif 71 <= mondice <= 95:
+        print("orc")
+    elif 96 <= mondice <= 100:
+        print("boss")
+    print(Monster.count)
 #-------------------------------------- Textual context. Story and game dialogue.
 
 # print("Adventurers Guild Receptionist: Welcome traveler! You aren't the first to try and challenge the wild forests")
@@ -168,8 +201,12 @@ def armorselect():
 enviro = RandEnv()
 print("As you travel out of the town, you approach a " + enviro + " region.")
 print("You start to enter the " + enviro + " on foot and walk at a leisurely pace.")
+encounter()
+encounter()
+encounter()
+encounter()
 
-#Potion code
+# Potion code
 # print("Use potion?")
 # usepotion = str(input())
 # if (usepotion in yeslist):
