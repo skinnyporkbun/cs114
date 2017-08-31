@@ -20,27 +20,28 @@ class Player:
     Defense = 3
     Dodge = 10
     PotionCount = 2
+    Name = ""
 
 class Orc:
-    mobtype = "Monster"
+    Name = "Orc"
     Health = 20
     Attack = 2
     Defense = 3
 
 class Wolf:
-    mobtype = "Monster"
+    Name = "Wolf"
     Health = 5
     Attack = 3
     Defense = 1
 
 class Slime:
-    mobtype = "Monster"
+    Name = "Slime"
     Health = 2
     Attack = 1
     Defense = 1
 
 class Boss:
-    mobtype = "Monster"
+    Name = "Boss"
     Health = 50
     Attack = 10
     Defense = 10
@@ -96,13 +97,16 @@ def RandEnv():
 
 
 # ---Function to allow player to heal using a potion---
-def potion():
+def potion(monster):
     if Player.PotionCount >= 1:
         Player.Health += 5
+        if Player.Health > 15:
+            Player.Health = 15
         Player.PotionCount -= 1
-        print("You've used a potion and recovered 5 health!")
+        print("You've used a potion and recovered health!")
     else:
         print("You don't have any potions!")
+        PlayerTurn(monster)
 
 
 #Function for selecting weapons as well as checking. and Statistics---
@@ -174,22 +178,79 @@ def encounter():
     Monster.count += 1
     mondice = randint(1,100)
     if 1 <= mondice <= 40:
-        print("slime")
+        monster = Slime()
     elif 41 <= mondice <= 70:
-        print("wolf")
+        monster = Wolf()
     elif 71 <= mondice <= 95:
-        print("orc")
+        monster = Orc()
     elif 96 <= mondice <= 100:
-        print("boss")
-    print(Monster.count)
+        monster = Boss()
+    if Player.Health > 0:
+        if monster.Name == "Orc":
+            print("An " + monster.Name + " is attacking!")
+        else:
+            print("A " + monster.Name + " is attacking!")
+    PlayerTurn(monster)
+
+
+def PlayerTurn(monster):
+    if Player.Health > 0:
+        print("What will you do?")
+        print("Attack       Defend")
+        print("Potion (" + str(Player.PotionCount) + ")   Flee")
+        BattleChoice = input()
+        if BattleChoice == "Attack":
+            monster.Health -= Player.Attack
+            print("You attacked " + monster.Name + " for " + str(Player.Attack) + " damage!")
+            if monster.Health > 0:
+                print(monster.Name + " has " + str(monster.Health) + " remaining!")
+                MonsterTurn(monster)
+            elif monster.Health <= 0:
+                print(monster.Name + " has been defeated!")
+        elif BattleChoice == "Potion":
+            if Player.Health == 15:
+                print("You're at full health!")
+                PlayerTurn(monster)
+            elif Player.Health < 15:
+                potion(monster)
+                MonsterTurn(monster)
+        elif BattleChoice == "Defend":
+            print("defense placeholder")
+            MonsterTurn(monster)
+        elif BattleChoice == "Flee":
+            print("Flee Placeholder")
+        else:
+            print("Please make a choice")
+            PlayerTurn(monster)
+
+def MonsterTurn(monster):
+    if monster.Health > 0:
+        miss = randint(1,100)
+        if miss < Player.Dodge:
+            print(monster.Name + " missed it's attack!")
+            PlayerTurn(monster)
+        elif miss > Player.Dodge:
+            Player.Health -= monster.Attack
+            print(monster.Name + " attacked you for " + str(monster.Attack) + " damage!")
+            if Player.Health > 0:
+                print(str(Player.Health) + " health remaining.")
+                PlayerTurn(monster)
+            elif Player.Health <= 0:
+                print("0 health remaining")
+                PlayerDeath(monster)
+
+def PlayerDeath(monster):
+        print(Player.Name + " was gutted by the " + monster.Name + " in their attempt to find glory and treasures...")
+        print("Let this be a lesson to any other adventurers that may pursue the same path...")
+
 #-------------------------------------- Textual context. Story and game dialogue.
 
 # print("Adventurers Guild Receptionist: Welcome traveler! You aren't the first to try and challenge the wild forests")
 # print("of this area!")
 # sleep(0.5)
 # print("Adventurers Guild Receptionist: What may I address you as?")
-# PlayerName = str(input())
-# print("Adventurers Guild Receptionist: Ah, so " + PlayerName + ", you want the glory and treasures of this dark forest?")
+# Player.Name = str(input())
+# print("Adventurers Guild Receptionist: Ah, so " + Player.Name + ", you want the glory and treasures of this dark forest?")
 # sleep(0.5)
 # print("Adventurers Guild Receptionist: You're gonna need some starter gear, as I see that you have nothing with you!")
 # sleep(1)
@@ -198,23 +259,7 @@ def encounter():
 # print("Adventurers Guild Receptionist: You're probably gonna want some armor too.")
 # print("Adventurers Guild Receptionist: Would you like the platemail, leather armor, or cloth armor?")
 # armorselect()
-enviro = RandEnv()
-print("As you travel out of the town, you approach a " + enviro + " region.")
-print("You start to enter the " + enviro + " on foot and walk at a leisurely pace.")
+# enviro = RandEnv()
+# print("As you travel out of the town, you approach a " + enviro + " region.")
+# print("You start to enter the " + enviro + " on foot and walk at a leisurely pace.")
 encounter()
-encounter()
-encounter()
-encounter()
-
-# Potion code
-# print("Use potion?")
-# usepotion = str(input())
-# if (usepotion in yeslist):
-#     potion()
-# elif (usepotion in nolist):
-#     print("You didn't do anything.")
-# else:
-#     print("Not valid command.")
-#
-# print(str(Player.Health))
-# print("You have " + str(Player.PotionCount) + " potions remaining.")
