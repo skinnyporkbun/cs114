@@ -4,15 +4,15 @@ nolist = ["No", "NO", "no", "N", "n"]
 
 
 def get_responselist():
-    responseList = ["A cookie will fall from the sky and land upon your blessed head, name.",
-"You will soon lose something valuable to you, name. Like your cookie.",
-"Your day will be great and filled with rightous glory! name, Go conquer the world!",
-"Nobody is going to mess with you today, name. Be Free!",
-"Major crisis is going to enter your life. Be prepared for anything between zombies and toe stubbing.",
-"Watch out for cars, name. They hurt.",
-"You will soon win a championship in your hobby. You won't get paid though. Sucks to be you name.",
-"Many lottery tickets will be bought. None won. Don't do it.",
-"You're going to have a pretty normal day, name. What normal is will be left up to you."
+    responseList = ["A cookie will fall from the sky and land upon your blessed head, -.",
+"You will soon lose something valuable to you, -. Like your cookie.",
+"Your day will be great and filled with rightous glory! -, Go conquer the world!",
+"Nobody is going to mess with you today, -. Be Free!",
+"Major crisis is going to enter your life, -. Be prepared for anything between zombies and toe stubbing.",
+"Watch out for cars, -. They hurt.",
+"You will soon win a championship in your hobby. You won't get paid though. Sucks to be you -.",
+"Many lottery tickets will be bought. None won. Don't do it, -.",
+"You're going to have a pretty normal day, -. What normal is will be left up to you."
 ]
     return responseList
 
@@ -38,42 +38,34 @@ def get_responselist():
 
 
 
-def magicball2(number, name):
+def magicball2(number, name, responseList):
+
     if number == 1:
-        response = responseList[0]
-        response.replace("name", name)
+        response = responseList[0].replace("-", name)
         return response
     elif number == 2:
-        response = responseList[1]
-        response.replace("name", name)
+        response = responseList[1].replace("-", name)
         return response
     elif number == 3:
-        response = responseList[2]
-        response.replace("name", name)
+        response = responseList[2].replace("-", name)
         return response
     elif number == 4:
-        response = responseList[3]
-        response.replace("name", name)
+        response = responseList[3].replace("-", name)
         return response
     elif number == 5:
-        response = responseList[4]
-        response.replace("name", name)
+        response = responseList[4].replace("-", name)
         return response
     elif number == 6:
-        response = responseList[5]
-        response.replace("name", name)
+        response = responseList[5].replace("-", name)
         return response
     elif number == 7:
-        response = responseList[6]
-        response.replace("name", name)
+        response = responseList[6].replace("-", name)
         return response
     elif number == 8:
-        response = responseList[7]
-        response.replace("name", name)
+        response = responseList[7].replace("-", name)
         return response
     elif number == 9:
-        response = responseList[8]
-        response.replace("name", name)
+        response = responseList[8].replace("-", name)
         return response
 
 def promptname():
@@ -85,14 +77,14 @@ def randnum(listsize):
     number = randint(1, listsize)
     return number
 
-def rerun(name):
+def rerun(name, listsize, responseList):
     print("Would you like to run it again?")
     yesno = str(input())
     if (yesno in yeslist):
         number = randnum(listsize)
-        response = magicball2(number, name)
+        response = magicball2(number, name, responseList)
         print(response)
-        rerun(name)
+        rerun(name, listsize, responseList)
     elif (yesno in nolist):
         print("Alright, Cya then!")
     else:
@@ -103,8 +95,8 @@ def Main():
     listsize = len(responseList)
     number = randnum(listsize)
     name = promptname()
-    response = magicball2(number, name)
-    print (response)
-    rerun(name)
+    response = magicball2(number, name, responseList)
+    print(response)
+    rerun(name, listsize, responseList)
 
 Main()
