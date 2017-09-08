@@ -45,13 +45,15 @@ class Boss:
     Health = 50
     Attack = 10
     Defense = 10
+    Killed = False
 
-class Environment:
-    enviro = ""
+# class Environment:
+#     enviro = ""
 
-class Monster:
+class Misc:
     count = 0
-
+    AmuletGet = False
+    TravelCount = 0
 #---------------------Independent global variables--------------
 plate = 4
 leather = 2
@@ -61,7 +63,8 @@ cloth = 1
 
 #------Function to set up random enviroment-----
 def RandEnv():
-    random = randint(1,1)
+    Misc.TravelCount = 0
+    random = randint(1,4)
     if random == 1:
         enviro = "forest"
         return enviro
@@ -78,23 +81,79 @@ def RandEnv():
 
 #-----Function for to display different dialogue for each "movement" in terrain, or -------
 #reset for new terrain
-# def travel():
-#
-#     if enviro == "forest":
-#         forestcount += 1
-#         if forestcount == 1:
-#             print("You start to cautiously enter an ominous forest.")
-#         elif forestcount == 2:
-#             print("You continue your slow trek through the thick underbrush.")
-#         elif forestcount >= 3:
-#             print("The eerie silence of the forest causes you to ponder about life as you trudge on.")
-#     elif enviro == "desert":
-#         desertcount += 1
-#     elif enviro == "plain":
-#         plaincount += 1
-#     elif enviro == "savannah":
-#         savannahcount += 1
 
+def travel(enviro):
+    if enviro == "forest":
+        Misc.TravelCount += 1
+        if Misc.TravelCount == 1:
+            print("You start to cautiously enter an ominous forest.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 2:
+            print("You continue your slow trek through the thick underbrush.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 3:
+            print("The eerie silence of the forest causes you to ponder about life as you trudge on.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 4:
+            print("The silence weighs in on you heavily as you walk forward, seeing the glimmer of sunlight as the trees open outwards.")
+            enviro = RandEnv()
+            return enviro
+    elif enviro == "desert":
+        Misc.TravelCount += 1
+        if Misc.TravelCount == 1:
+            print("You step into the sand of a desert with the sun beating down on you.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 2:
+            print("As you continue forward, a lizard scurries into the cover of a rock to your left side.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 3:
+            print("Your potions bottles clink against each other, as you thirst for liquids.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 4:
+            print("Feet dragging in the sand, you come over the top of a sand dune to see a new environment.")
+            enviro = RandEnv()
+            return enviro
+    elif enviro == "plain":
+        Misc.TravelCount += 1
+        if Misc.TravelCount == 1:
+            print("Grasses and grains sway in the open fields in front of you.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 2:
+            print("Leaving a visible trail behind in the grasses, you walk forward, hoping to get clear of the grass.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 3:
+            print("A thunderstorm rumbles in the distance of the plains, alerting you of incoming rain.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 4:
+            print("Sunlight shows itself as you finally reach what you think is the edge of the plain.")
+            enviro = RandEnv()
+            return enviro
+    elif enviro == "savannah":
+        Misc.TravelCount += 1
+        if Misc.TravelCount == 1:
+            print("Dirt crunches under your feet as you walk into the savannah.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 2:
+            print("You pass countless dead shrubs as you keep a watch out for potential enemies and predators.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 3:
+            print("Dropping to the ground, you see a saber-toothed cow chasing down a small leohare.")
+            TravelDice(enviro)
+        elif Misc.TravelCount == 4:
+            print("Leaving the dry land behind, you march forward into a new scene.")
+            enviro = RandEnv()
+            return enviro
+
+def TravelDice(enviro):
+    Dice = randint(1, 6)
+    if Dice == 1:
+        travel(enviro)
+    elif Dice == 2:
+        travel(enviro)
+    elif Dice == 3:
+        travel(enviro)
+    elif 4 <= Dice <= 6:
+        encounter(enviro)
 
 # ---Function to allow player to heal using a potion---
 def potion(monster):
@@ -103,7 +162,7 @@ def potion(monster):
         if Player.Health > 15:
             Player.Health = 15
         Player.PotionCount -= 1
-        print("You've used a potion and recovered health!")
+        print("You've used a potion and recovered to " + str(Player.Health) + " health!")
     else:
         print("You don't have any potions!")
         PlayerTurn(monster)
@@ -174,75 +233,149 @@ def armorselect():
         print("Adventurers Guild Receptionist: Well, please let me know what it is you want now. Platemail, leather armor, or cloth armor?")
         armorselect()
 
-def encounter():
-    Monster.count += 1
+def encounter(enviro):
+    Misc.count += 1
     mondice = randint(1,100)
-    if 1 <= mondice <= 40:
-        monster = Slime()
-    elif 41 <= mondice <= 70:
-        monster = Wolf()
-    elif 71 <= mondice <= 95:
-        monster = Orc()
-    elif 96 <= mondice <= 100:
+    if Misc.count == 5:
         monster = Boss()
+    elif 41 <= mondice <= 80:
+        monster = Wolf()
+    elif 81 <= mondice <= 100:
+        monster = Orc()
+    elif 1 <= mondice <= 40:
+        monster = Slime()
     if Player.Health > 0:
         if monster.Name == "Orc":
             print("An " + monster.Name + " is attacking!")
         else:
             print("A " + monster.Name + " is attacking!")
-    PlayerTurn(monster)
+    PlayerTurn(monster, enviro)
 
-
-def PlayerTurn(monster):
+def PlayerTurn(monster, enviro):
     if Player.Health > 0:
         print("What will you do?")
         print("Attack       Defend")
         print("Potion (" + str(Player.PotionCount) + ")   Flee")
         BattleChoice = input()
         if BattleChoice == "Attack":
-            monster.Health -= Player.Attack
-            print("You attacked " + monster.Name + " for " + str(Player.Attack) + " damage!")
-            if monster.Health > 0:
-                print(monster.Name + " has " + str(monster.Health) + " remaining!")
-                MonsterTurn(monster)
-            elif monster.Health <= 0:
-                print(monster.Name + " has been defeated!")
+            AttackChoice(monster, BattleChoice, enviro)
         elif BattleChoice == "Potion":
             if Player.Health == 15:
+                sleep(1)
                 print("You're at full health!")
-                PlayerTurn(monster)
+                PlayerTurn(monster, enviro)
             elif Player.Health < 15:
+                sleep(1)
                 potion(monster)
-                MonsterTurn(monster)
+                MonsterTurn(monster, BattleChoice, enviro)
         elif BattleChoice == "Defend":
-            print("defense placeholder")
-            MonsterTurn(monster)
+            sleep(1)
+            print("You block in hopes of weakening " + monster.Name + "\'s Attack!")
+            MonsterTurn(monster, BattleChoice, enviro)
         elif BattleChoice == "Flee":
-            print("Flee Placeholder")
+            sleep(1)
+            print("You try to run away!")
+            FleeChoice(monster, BattleChoice)
+        elif BattleChoice == "Kill":
+            monster.Health = 0
+            AttackChoice(monster, BattleChoice, enviro)
         else:
+            sleep(1)
             print("Please make a choice")
-            PlayerTurn(monster)
+            PlayerTurn(monster, enviro)
 
-def MonsterTurn(monster):
+def MonsterTurn(monster, BattleChoice, enviro):
     if monster.Health > 0:
         miss = randint(1,100)
         if miss < Player.Dodge:
+            sleep(1)
             print(monster.Name + " missed it's attack!")
-            PlayerTurn(monster)
+            PlayerTurn(monster, enviro)
         elif miss > Player.Dodge:
-            Player.Health -= monster.Attack
-            print(monster.Name + " attacked you for " + str(monster.Attack) + " damage!")
-            if Player.Health > 0:
-                print(str(Player.Health) + " health remaining.")
-                PlayerTurn(monster)
-            elif Player.Health <= 0:
-                print("0 health remaining")
-                PlayerDeath(monster)
+            if BattleChoice == "Defend":
+                DefendChoice(monster)
+                PlayerDeathCheck(monster)
+            else:
+                Player.Health -= monster.Attack - (Player.Defense//5)
+                sleep(1)
+                print(monster.Name + " attacked you for " + str(monster.Attack) + " damage!")
+                PlayerDeathCheck(monster)
 
 def PlayerDeath(monster):
-        print(Player.Name + " was gutted by the " + monster.Name + " in their attempt to find glory and treasures...")
-        print("Let this be a lesson to any other adventurers that may pursue the same path...")
+    print(Player.Name + " was gutted by the " + monster.Name + " in their attempt to find glory and treasures...")
+    print("Let this be a lesson to any other adventurers that may pursue the same path...")
 
+def DefendChoice(monster):
+    BlockedAttack = monster.Attack//1.5 - (Player.Defense*2)//5
+    Player.Health -= int(BlockedAttack)
+    print(monster.Name + " attacked you for " + str(int(BlockedAttack)) + " damage!")
+
+def PlayerDeathCheck(monster):
+    if Player.Health > 0:
+        sleep(1)
+        print(str(Player.Health) + " health remaining.")
+        PlayerTurn(monster, enviro)
+    elif Player.Health <= 0:
+        sleep(1)
+        print("0 health remaining")
+        PlayerDeath(monster)
+
+def FleeChoice(monster, BattleChoice):
+    FleeChance = Player.Dodge + randint(1, 70)
+    if FleeChance >= 50:
+        print("You've managed to slip away from " + monster.Name + ".")
+    elif FleeChance <= 49:
+        print("You didn't manage to get away from " + monster.Name + ".")
+        MonsterTurn(monster, BattleChoice, enviro)
+
+def AttackChoice(monster, BattleChoice, enviro):
+            monster.Health -= Player.Attack - (monster.Defense//5)
+            print("You attacked " + monster.Name + " for " + str(Player.Attack) + " damage!")
+            if monster.Health > 0:
+                sleep(1)
+                print(monster.Name + " has " + str(monster.Health) + " health remaining!")
+                MonsterTurn(monster, BattleChoice, enviro)
+            elif monster.Health <= 0:
+                sleep(1)
+                print(monster.Name + " has been defeated!")
+                LootChance(monster)
+                travel(enviro)
+
+def EnviroObstacle(enviro):
+    if enviro == "forest":
+        return "tree"
+    elif enviro == "desert":
+        return "sand dune"
+    elif enviro == "savannah":
+        return "dried log"
+    elif enviro == "plain":
+        return "clump of tall grass"
+
+def LootChance(monster):
+    Dice = randint(17, 20)
+    if 1 <= Dice <= 10:
+        print("You couldn't scavange anything from the " + monster.Name + ".")
+    elif 11 <= Dice <= 16:
+        print("You found a potion underneath the corpse of " + monster.Name + "!")
+        Player.PotionCount += 1
+        print("You now have " + str(Player.PotionCount) + " potions.")
+    else:
+        AmuAttack = randint(0,5)
+        AmuDefense = randint(0,5)
+        Player.Attack += AmuAttack
+        Player.Defense += AmuDefense
+        if Misc.AmuletGet == False:
+            Misc.AmuletGet = True
+            print("You found a magical amulet on the ground nearby!")
+            print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
+        elif Misc.AmuletGet == True:
+            print("You found a magical amulet on the ground nearby!")
+            print("The new amulet fuses with the one that you are already wearing!")
+            print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
+
+def TravelEncounter():
+    enviro = RandEnv()
+    travel(enviro)
 #-------------------------------------- Textual context. Story and game dialogue.
 
 # print("Adventurers Guild Receptionist: Welcome traveler! You aren't the first to try and challenge the wild forests")
@@ -259,7 +392,7 @@ def PlayerDeath(monster):
 # print("Adventurers Guild Receptionist: You're probably gonna want some armor too.")
 # print("Adventurers Guild Receptionist: Would you like the platemail, leather armor, or cloth armor?")
 # armorselect()
-# enviro = RandEnv()
-# print("As you travel out of the town, you approach a " + enviro + " region.")
-# print("You start to enter the " + enviro + " on foot and walk at a leisurely pace.")
-encounter()
+if Boss.Killed == True:
+    print("You've won!")
+else:
+    TravelEncounter()
