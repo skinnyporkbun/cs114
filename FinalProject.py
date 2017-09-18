@@ -297,7 +297,7 @@ def PlayerTurn(monster, enviro):
                 FleeChoice(monster, BattleChoice)
             elif BattleChoice == "Skill":
                 print("Which skill would you like to use?")
-                SkillCast(monster, BattleChoice, enviro)
+                SkillChoice(monster, BattleChoice, enviro)
             else:
                 sleep(2)
                 print("Please make a choice")
@@ -404,7 +404,7 @@ def SkillCast(monster, BattleChoice, enviro):
             PlayerTurn(monster, enviro)
         else:
             print("Please choose a skill or Cancel.")
-            SkillCast(monster, BattleChoice, enviro)
+            SkillChoice(monster, BattleChoice, enviro)
     elif Player.Weapon == "axe":
         if Cast == "Wide Swing":
             if Misc.CD1Count > 0:
@@ -440,7 +440,7 @@ def SkillCast(monster, BattleChoice, enviro):
             PlayerTurn(monster, enviro)
         else:
             print("Please choose a skill or Cancel.")
-            SkillCast(monster, BattleChoice, enviro)
+            SkillChoice(monster, BattleChoice, enviro)
     elif Player.Weapon == "bow":
         if Cast == "Multi-Shot":
             if Misc.CD1Count > 0:
@@ -471,7 +471,7 @@ def SkillCast(monster, BattleChoice, enviro):
             PlayerTurn(monster, enviro)
         else:
             print("Please choose a skill or Cancel.")
-            SkillCast(monster, BattleChoice, enviro)
+            SkillChoice(monster, BattleChoice, enviro)
 
 """ Combat Functions"""
 
