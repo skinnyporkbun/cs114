@@ -258,7 +258,7 @@ def armorselect():
         armorselect()
 
 
-""" Combat Functions """
+""" Player Combat Functions """
 
 #---Function that allows player's choices. Attack, Defend, Potion, Flee
 def PlayerTurn(monster, enviro):
@@ -303,67 +303,6 @@ def PlayerTurn(monster, enviro):
                 print("Please make a choice")
                 PlayerTurn(monster, enviro)
 
-#---Function that checks for monster missing an attack or hitting player
-def MonsterTurn(monster, BattleChoice, enviro):
-    if monster.Health > 0:
-        miss = randint(1,100)
-        Misc.CD1Count -= 1
-        Misc.CD2Count -= 1
-        if miss < Player.Dodge:
-            sleep(2)
-            print(monster.Name + " missed it's attack!")
-            PlayerTurn(monster, enviro)
-        elif miss > Player.Dodge:
-            if BattleChoice == "Defend":
-                DefendChoice(monster)
-                PlayerDeathCheck(monster)
-            else:
-                MonDmg = monster.Attack - (Player.Defense//5)
-                Player.Health -= MonDmg
-                sleep(2)
-                print(monster.Name + " attacked you for " + str(MonDmg) + " damage!")
-                PlayerDeathCheck(monster)
-
-#---Function that displays text when player dies
-def PlayerDeath(monster):
-    sleep(3)
-    print(Player.Name + " was gutted by the " + monster.Name + " in their attempt to find glory and treasures...")
-    sleep(3)
-    print("Let this be a lesson to any other adventurers that may pursue the same path...")
-    quit()
-
-#---Function that runs formula for defending against a monster's attack
-def DefendChoice(monster):
-    BlockedAttack = monster.Attack//1.5 - (Player.Defense*2)//5
-    if BlockedAttack > 0:
-        Player.Health -= int(BlockedAttack)
-        sleep(2)
-        print(monster.Name + " attacked you for " + str(int(BlockedAttack)) + " damage!")
-    elif BlockedAttack <= 0:
-        print("You've deflected the attack!")
-
-#---Function that checks if player has any health left or is dead
-def PlayerDeathCheck(monster):
-    if Player.Health > 0:
-        sleep(2)
-        print(str(Player.Health) + " health remaining.")
-        PlayerTurn(monster, enviro)
-    elif Player.Health <= 0:
-        sleep(2)
-        print("0 health remaining")
-        PlayerDeath(monster)
-
-#---Function that checks whether the player successfully flees from the battle
-def FleeChoice(monster, BattleChoice):
-    FleeChance = Player.Dodge + randint(1, 70)
-    if FleeChance >= 50:
-        print("You've managed to slip away from " + monster.Name + ".")
-        sleep(2)
-    elif FleeChance <= 49:
-        print("You didn't manage to get away from " + monster.Name + ".")
-        sleep(2)
-        MonsterTurn(monster, BattleChoice, enviro)
-
 #---Function that runs player's damage formula when attacking or if monster dies
 def AttackChoice(monster, BattleChoice, enviro):
     SwingDmg = Player.Attack - (monster.Defense//5)
@@ -375,6 +314,26 @@ def AttackChoice(monster, BattleChoice, enviro):
         MonsterTurn(monster, BattleChoice, enviro)
     elif monster.Health <= 0:
         MonDeath(monster, BattleChoice, enviro)
+
+#---Function that runs formula for defending against a monster's attack
+def DefendChoice(monster):
+    BlockedAttack = monster.Attack//1.5 - (Player.Defense*2)//5
+    if BlockedAttack > 0:
+        Player.Health -= int(BlockedAttack)
+        sleep(2)
+        print(monster.Name + " attacked you for " + str(int(BlockedAttack)) + " damage!")
+    elif BlockedAttack <= 0:
+        print("You've deflected the attack!")
+
+#---Shows the skill list based on weapon for the player upon selection
+def SkillChoice(monster, BattleChoice, enviro):
+    if Player.Weapon == "sword":
+        CDText()
+    elif Player.Weapon == "axe":
+        CDText()
+    elif Player.Weapon == "bow":
+        CDText()
+    SkillCast(monster, BattleChoice, enviro)
 
 #---Function to allow player to heal using a potion---
 def potion(monster):
@@ -388,51 +347,18 @@ def potion(monster):
         print("You don't have any potions!")
         PlayerTurn(monster)
 
-#---Function that checks for loot when monster dies
-def LootChance(monster):
-    Dice = randint(1, 20)
-    if 1 <= Dice <= 10:
-        print("You couldn't scavange anything from the " + monster.Name + ".")
-    elif 11 <= Dice <= 16:
-        print("You found a potion underneath the corpse of " + monster.Name + "!")
-        Player.PotionCount += 1
-        print("You now have " + str(Player.PotionCount) + " potions.")
-    else:
-        AmuAttack = randint(0,5)
-        AmuDefense = randint(0,5)
-        Player.Attack += AmuAttack
-        Player.Defense += AmuDefense
-        if Misc.AmuletGet == False:
-            Misc.AmuletGet = True
-            print("You found a magical amulet on the ground nearby!")
-            sleep(1)
-            print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
-        elif Misc.AmuletGet == True:
-            print("You found a magical amulet on the ground nearby!")
-            sleep(1)
-            print("The new amulet fuses with the one that you are already wearing!")
-            sleep(1)
-            print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
+#---Function that checks whether the player successfully flees from the battle
+def FleeChoice(monster, BattleChoice):
+    FleeChance = Player.Dodge + randint(1, 70)
+    if FleeChance >= 50:
+        print("You've managed to slip away from " + monster.Name + ".")
+        sleep(2)
+    elif FleeChance <= 49:
+        print("You didn't manage to get away from " + monster.Name + ".")
+        sleep(2)
+        MonsterTurn(monster, BattleChoice, enviro)
 
-def SkillList(monster, BattleChoice, enviro):
-    if Player.Weapon == "sword":
-        skill1 = SSkillList[0]
-        skill2 = SSkillList[1]
-        if Misc.CD1Count > 1:
-            Cd1 = Misc.CD1Count-1
-        else:
-            Cd1 = Misc.CD1Count
-        if Misc.CD2Count > 1:
-            Cd2 = Misc.CD2Count-1
-        else:
-            Cd2 = Misc.CD2Count
-        print(skill1 + "(" + str(Cd1) + "), " + skill2 + "(" + str(Cd2) + ")")
-    elif Player.Weapon == "axe":
-        print(ASkillList)
-    elif Player.Weapon == "bow":
-        print(BSkillList)
-    SkillCast(monster, BattleChoice, enviro)
-
+#---Contains all the specifics for the skills and weapon types.
 def SkillCast(monster, BattleChoice, enviro):
     Cast = input()
     if Player.Weapon == "sword":
@@ -547,6 +473,54 @@ def SkillCast(monster, BattleChoice, enviro):
             print("Please choose a skill or Cancel.")
             SkillList(monster, BattleChoice, enviro)
 
+""" Combat Functions"""
+
+#---Function that checks for monster missing an attack or hitting player
+def MonsterTurn(monster, BattleChoice, enviro):
+    if monster.Health > 0:
+        miss = randint(1,100)
+        Misc.CD1Count -= 1
+        Misc.CD2Count -= 1
+        if miss < Player.Dodge:
+            sleep(2)
+            print(monster.Name + " missed it's attack!")
+            PlayerTurn(monster, enviro)
+        elif miss > Player.Dodge:
+            if BattleChoice == "Defend":
+                DefendChoice(monster)
+                PlayerDeathCheck(monster)
+            else:
+                MonDmg = monster.Attack - (Player.Defense//5)
+                Player.Health -= MonDmg
+                sleep(2)
+                print(monster.Name + " attacked you for " + str(MonDmg) + " damage!")
+                PlayerDeathCheck(monster)
+
+#---Function that checks if player has any health left or is dead
+def PlayerDeathCheck(monster):
+    if Player.Health > 0:
+        sleep(2)
+        print(str(Player.Health) + " health remaining.")
+        PlayerTurn(monster, enviro)
+    elif Player.Health <= 0:
+        sleep(2)
+        print("0 health remaining")
+        PlayerDeath(monster)
+
+#---Function that checks for loot when monster dies
+def LootChance(monster):
+    Dice = randint(1, 20)
+    if 1 <= Dice <= 10:
+        print("You couldn't scavange anything from the " + monster.Name + ".")
+    elif 11 <= Dice <= 16:
+        print("You found a potion underneath the corpse of " + monster.Name + "!")
+        Player.PotionCount += 1
+        print("You now have " + str(Player.PotionCount) + " potions.")
+    else:
+        AmuletFormula()
+        AmuletText()
+
+#---Monster Death check
 def MonDeath(monster, BattleChoice, enviro):
     if monster.Health > 0:
         sleep(1)
@@ -562,10 +536,78 @@ def MonDeath(monster, BattleChoice, enviro):
             travel(enviro)
 
 
+""" Amulet Functions """
+
+def AmuletFormula():
+    AmuAttack = randint(0,5)
+    AmuDefense = randint(0,5)
+    Player.Attack += AmuAttack
+    Player.Defense += AmuDefense
+
+def AmuletText():
+    if Misc.AmuletGet == False:
+        Misc.AmuletGet = True
+        print("You found a magical amulet on the ground nearby!")
+        sleep(1)
+        print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
+    elif Misc.AmuletGet == True:
+        print("You found a magical amulet on the ground nearby!")
+        sleep(1)
+        print("The new amulet fuses with the one that you are already wearing!")
+        sleep(1)
+        print("You now have " + str(Player.Attack) + " attack and " + str(Player.Defense) + " defense!")
+
 """ Text Functions """
 
-# def SkillText():
+#---Function that displays text when player dies
+def PlayerDeath(monster):
+    sleep(3)
+    print(Player.Name + " was gutted by the " + monster.Name + " in their attempt to find glory and treasures...")
+    sleep(3)
+    print("Let this be a lesson to any other adventurers that may pursue the same path...")
+    quit()
 
+#--- Function that controls what text prints for cooldown and the skill list
+def CDText():
+    skill1 = SSkillList[0]
+    skill2 = SSkillList[1]
+    if Misc.CD1Count > 1:
+        Cd1 = Misc.CD1Count-1
+    else:
+        Cd1 = Misc.CD1Count
+    if Misc.CD2Count > 1:
+        Cd2 = Misc.CD2Count-1
+    else:
+        Cd2 = Misc.CD2Count
+    if Cd1 <=0 and Cd2 <= 0:
+        print(skill1 + "(0), " + skill2 + "(0)")
+    elif Cd1 <= 0:
+        print(skill1 + "(0), " + skill2 + "(" + str(Cd2) + ")")
+    elif Cd2 <= 0:
+        print(skill1+ "(" + str(Cd1) + ")" + skill2 + "(0)")
+    else:
+        print(skill1 + "(" + str(Cd1) + "), " + skill2 + "(" + str(Cd2) + ")")
+
+#--- Function that runs all the intro text as well as the weapon and armor select.
+def Intro():
+    print("Adventurers Guild Receptionist: Welcome traveler! You aren't the first to try and challenge the wild forests")
+    print("of this area!")
+    sleep(2)
+    print("Adventurers Guild Receptionist: What may I address you as?")
+    Player.Name = str(input())
+    sleep(0.5)
+    print("Adventurers Guild Receptionist: Ah, so " + Player.Name + ", you want the glory and treasures of this dark forest?")
+    sleep(3)
+    print("Adventurers Guild Receptionist: You're gonna need some starter gear, as I see that you have nothing with you!")
+    sleep(2)
+    print("Adventurers Guild Receptionist: Would you like a shortsword and shield, battleaxe, or a bow?")
+    weaponselect()
+    sleep(0.5)
+    print("Adventurers Guild Receptionist: You're probably gonna want some armor too.")
+    sleep(2)
+    print("Adventurers Guild Receptionist: Would you like the platemail, leather armor, or cloth armor?")
+    armorselect()
+    sleep(0.5)
 
 #---Function that runs text once you beat the game.
 def WinText():
@@ -577,27 +619,13 @@ def WinText():
     print("                           \"Boss\",")
     print("       will be passed down as a legend. The story of " + Player.Name + "...")
 
-#-------------------------------------- Textual context. Story and game dialogue.
+""" Main Function """
 
-print("Adventurers Guild Receptionist: Welcome traveler! You aren't the first to try and challenge the wild forests")
-print("of this area!")
-sleep(2)
-print("Adventurers Guild Receptionist: What may I address you as?")
-Player.Name = str(input())
-sleep(0.5)
-print("Adventurers Guild Receptionist: Ah, so " + Player.Name + ", you want the glory and treasures of this dark forest?")
-sleep(3)
-print("Adventurers Guild Receptionist: You're gonna need some starter gear, as I see that you have nothing with you!")
-sleep(2)
-print("Adventurers Guild Receptionist: Would you like a shortsword and shield, battleaxe, or a bow?")
-weaponselect()
-sleep(0.5)
-print("Adventurers Guild Receptionist: You're probably gonna want some armor too.")
-sleep(2)
-print("Adventurers Guild Receptionist: Would you like the platemail, leather armor, or cloth armor?")
-armorselect()
-sleep(0.5)
-while Boss.Killed == False:
-    TravelEncounter()
+def Main():
+    Intro()
+    while Boss.Killed == False:
+        TravelEncounter()
+    WinText()
 
-WinText()
+#------- Runs game
+Main()
