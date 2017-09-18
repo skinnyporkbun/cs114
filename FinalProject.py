@@ -569,8 +569,15 @@ def PlayerDeath(monster):
 
 #--- Function that controls what text prints for cooldown and the skill list
 def CDText():
-    skill1 = SSkillList[0]
-    skill2 = SSkillList[1]
+    if Player.Weapon == "sword":
+        skill1 = SSkillList[0]
+        skill2 = SSkillList[1]
+    elif Player.Weapon == "bow":
+        skill1 = BSkillList[0]
+        skill2 = BSkillList[1]
+    elif Player.Weapon == "axe":
+        skill1 = ASkillList[0]
+        skill2 = ASkillList[1]
     if Misc.CD1Count > 1:
         Cd1 = Misc.CD1Count-1
     else:
